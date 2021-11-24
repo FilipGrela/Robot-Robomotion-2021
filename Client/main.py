@@ -6,6 +6,10 @@ import socket
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 
+ID_SPEED_AXIS =  1 # left axis (dualshock 4) -1 = full speed
+ID_TURN_AXIS = 2 # right axis (dualshock 4) -1 = full left
+ID_ATTACK_AXIS = 5 # right trigger (dualshock 4)
+
 class bcolors:
     HEADER = '\033[95m' # magenta
     OKBLUE = '\033[94m'
@@ -62,10 +66,47 @@ def init_controller():
 
 def main():
     print(bcolors.ENDC)
-    # joystick = init_controller()
+
+    pygame.init()
+
+    clock = pygame.time.Clock()
+    joystick = init_controller()
     
-    example_json = json.loads('["foo", {"bar":["baz", null, 1.0, 2]}]')
-    send_json_data(example_json)
+    done = False
+
+    joystick_data = update_joystick_data(joystick)
+
+    while not done:
+        for event in pygame.event.get():
+            if event.type == pygame.JOYAXISMOTION:
+                joystick_data = update_joystick_data(joystick)
+                calculate_moror_speed(joystick_data)
+
+
+def calculate_moror_speed(joystick_data):
+    print(joystick_data)
+
+def update_joystick_data(joystick):
+    if abs(joystick.get_axis(ID_SPEED_AXIS)) > 0.15:
+        speed_axis = joystick.get_axis(ID_SPEED_AXIS)
+    else:
+        speed_axis = 0
+
+    if abs(joystick.get_axis(ID_TURN_AXIS)) > 0.15:
+        turn_axis = joystick.get_axis(ID_TURN_AXIS)
+    else:
+        turn_axis = 0
+    
+    if abs(joystick.get_axis(ID_ATTACK_AXIS)) > -0.90:
+        attack_axis = joystick.get_axis(ID_ATTACK_AXIS)
+    else:
+        attack_axis = 0
+
+    joystick_data = {"speed_axis": speed_axis,
+                     "turn_axis": turn_axis,
+                     "attack_axis": attack_axis
+                     }
+    return joystick_data
 
 def send_json_data(msg):
     send_data(json.dumps(msg, sort_keys=True, separators=(',', ':')))
