@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="d:\Programowanie\Robot-Robomotion-2021\Client\venv"
+VIRTUAL_ENV="C:\Users\MAT\Desktop\Nowy folder (2)\Robomotion 2021\Robot-Robomotion-2021\Client\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

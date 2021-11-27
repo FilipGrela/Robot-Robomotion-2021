@@ -23,8 +23,7 @@ class bcolors:
 
 def init_controller():
     print(bcolors.BOLD + "Initialize Joystick..." + bcolors.ENDC)
-
-    pygame.joystick.quit()
+    
     pygame.joystick.init()
     num_of_devides = pygame.joystick.get_count()
 
@@ -32,6 +31,7 @@ def init_controller():
 
     if num_of_devides == 1:
         joystick = pygame.joystick.Joystick(0)
+        joystick.init()
 
     elif num_of_devides > 1:
         joysticks = [pygame.joystick.Joystick(x) for x in range(num_of_devides)]
@@ -50,6 +50,7 @@ def init_controller():
                 selected_joystick = int(input())-1
             
             joystick = pygame.joystick.Joystick(selected_joystick)
+            joystick.init()
 
         except ValueError:
             print(bcolors.FAIL + "[ERROR] " + bcolors.ENDC + "This is not a joystick number.")
@@ -62,6 +63,7 @@ def init_controller():
 
     print(bcolors.OKCYAN + "[INFO] " + bcolors.ENDC + f"Joystick " + bcolors.BOLD + f"{joystick.get_name()}" + bcolors.ENDC + " is selected." )
 
+    
     return joystick
 
 def main():
@@ -71,11 +73,10 @@ def main():
 
     clock = pygame.time.Clock()
     joystick = init_controller()
-    
-    done = False
 
     joystick_data = update_joystick_data(joystick)
-
+    
+    done = False
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.JOYAXISMOTION:
