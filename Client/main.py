@@ -3,8 +3,8 @@ import time
 import json
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
+UDP_IP = "192.168.4.22"
+UDP_PORT = 8001
 
 ID_SPEED_AXIS =  1 # left axis (dualshock 4) -1 = full speed
 ID_TURN_AXIS = 2 # right axis (dualshock 4) -1 = full left
@@ -23,7 +23,7 @@ class bcolors:
 
 def init_controller():
     print(bcolors.BOLD + "Initialize Joystick..." + bcolors.ENDC)
-    
+
     pygame.joystick.init()
     num_of_devides = pygame.joystick.get_count()
 
@@ -85,7 +85,7 @@ def main():
 
 
 def calculate_moror_speed(joystick_data):
-    print(joystick_data)
+    send_data(joystick_data)
 
 def update_joystick_data(joystick):
     if abs(joystick.get_axis(ID_SPEED_AXIS)) > 0.15:
@@ -110,11 +110,12 @@ def update_joystick_data(joystick):
     return joystick_data
 
 def send_json_data(msg):
-    send_data(json.dumps(msg, sort_keys=True, separators=(',', ':')))
+    send_data(str(json.dumps(msg, sort_keys=True, separators=(',', ':'))))
 
 def send_data(msg):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(msg.encode('utf-8'), (UDP_IP, UDP_PORT))
+    sock.sendto(str(msg).encode("utf-8"), (UDP_IP, UDP_PORT))
+    print("Msg " + bcolors.UNDERLINE + f"{msg}" + bcolors.ENDC + " send")
 
 if __name__ == "__main__":
     main()
